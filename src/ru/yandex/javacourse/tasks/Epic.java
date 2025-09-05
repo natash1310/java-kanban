@@ -1,28 +1,31 @@
-import java.util.HashMap;
+package ru.yandex.javacourse.tasks;
+
+import java.util.HashSet;
+import java.util.Set;
 
 public class Epic extends Task {
 
-    private HashMap<Integer, SubTask> subTasks;
+    private final Set<Integer> subTaskIds;
 
     public Epic(String title, String description) {
         super(title, description);
-        this.subTasks = new HashMap<>();
+        this.subTaskIds = new HashSet<>();
     }
 
-    public HashMap<Integer, SubTask> getSubTasks() {
-        return subTasks;
+    public Set<Integer> getSubTasks() {
+        return subTaskIds;
     }
 
-    public void setSubTask(SubTask subTask) {
-        this.subTasks.put(subTask.getId(), subTask);
+    public void setSubTask(int id) {
+        this.subTaskIds.add(id);
     }
 
     public void removeSubTask(int id){
-        this.subTasks.remove(id);
+        this.subTaskIds.remove(id);
     }
 
     public void clearSubtasks(){
-        subTasks.clear();
+        subTaskIds.clear();
     }
 
     @Override

@@ -1,3 +1,5 @@
+package ru.yandex.javacourse.tasks;
+
 public class SubTask extends Task {
 
     private int epicId;
