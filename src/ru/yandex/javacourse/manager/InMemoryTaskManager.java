@@ -1,5 +1,7 @@
 package ru.yandex.javacourse.manager;
 
+
+import ru.yandex.javacourse.history.HistoryManager;
 import ru.yandex.javacourse.tasks.Epic;
 import ru.yandex.javacourse.tasks.Status;
 import ru.yandex.javacourse.tasks.SubTask;
@@ -9,14 +11,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-public class Manager {
+public class InMemoryTaskManager implements TaskManager {
 
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, SubTask> subTasks;
     private int idCounter = 1;
 
-    public Manager() {
+    public void resetIdCounter() {
+        this.idCounter = 1;
+    }
+
+    private final HistoryManager historyManager = Managers.getDefaultHistory();
+
+    public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
@@ -30,7 +38,7 @@ public class Manager {
     }
 
     public List<Epic> getAllEpics() {
-        if (epics.isEmpty()) { // проверяем, есть ли элементы в списке
+        if (epics.isEmpty()) {
             System.out.println("Нет сохранённых эпиков.");
         }
         return new ArrayList<>(epics.values());
@@ -56,11 +64,14 @@ public class Manager {
                 epic.clearSubtasks();
             }
         }
+        subTasks.clear();
     }
 
     public Task getTaskById(int id) {
         if (tasks.containsKey(id)) {
-            return tasks.get(id);
+            Task task = tasks.get(id);
+            historyManager.add(task);
+            return task;
         } else {
             System.out.println("Задачи с id: " + id + " нет");
             return null;
@@ -68,9 +79,23 @@ public class Manager {
 
     }
 
+    public SubTask getSubTaskById(int id) {
+        if (subTasks.containsKey(id)) {
+            SubTask subTask = subTasks.get(id);
+            historyManager.add(subTask);
+            return subTask;
+        } else {
+            System.out.println("Подзадачи с id: " + id + " нет");
+            return null;
+        }
+
+    }
+
     public Epic getEpicById(int id) {
         if (epics.containsKey(id)) {
-            return epics.get(id);
+            Epic epic = epics.get(id);
+            historyManager.add(epic);
+            return epic;
         } else {
             System.out.println("Эпика с id: " + id + " нет");
             return null;
@@ -80,8 +105,8 @@ public class Manager {
     public List<SubTask> getSubTasksByEpic(Epic epic) {
         ArrayList<SubTask> result = new ArrayList<>();
         if (epics.containsKey(epic.getId())) {
-            for(SubTask subTask : subTasks.values()){
-                if(subTask.getEpicId() == epic.getId()){
+            for (SubTask subTask : subTasks.values()) {
+                if (subTask.getEpicId() == epic.getId()) {
                     result.add(subTask);
                 }
             }
@@ -103,7 +128,7 @@ public class Manager {
     }
 
     public void createSubTask(SubTask subTask) {
-        Epic epic = getEpicById(subTask.getEpicId());
+        Epic epic = epics.get(subTask.getEpicId());
         if (epic != null) {
             subTask.setId(idCounter++);
             epic.setSubTask(subTask.getId());
@@ -122,7 +147,7 @@ public class Manager {
     }
 
     public void updateSubTask(SubTask subTask) {
-        Epic epic = getEpicById(subTask.getEpicId());
+        Epic epic = epics.get(subTask.getEpicId());
         epic.setSubTask(subTask.getId());
         epics.put(epic.getId(), epic);
         updateEpicStatus(epic);
@@ -167,7 +192,7 @@ public class Manager {
 
     public void removeEpicById(int id) {
         if (epics.containsKey(id)) {
-            Epic epic = getEpicById(id);
+            Epic epic = epics.get(id);
             for (Integer subTaskId : epic.getSubTasks()) {
                 subTasks.remove(subTaskId);
             }
@@ -180,7 +205,7 @@ public class Manager {
 
     public void removeSubTaskByIdAndEpicId(int id, int epicId) {
         if (epics.containsKey(epicId)) {
-            Epic epic = getEpicById(epicId);
+            Epic epic = epics.get(epicId);
             if (epic.getSubTasks().contains(id)) {
                 epic.removeSubTask(id);
                 updateEpicStatus(epic);
@@ -192,5 +217,9 @@ public class Manager {
         } else {
             System.out.println("Эпика с id: " + epicId + " нет");
         }
+    }
+
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 }
