@@ -20,21 +20,21 @@ public class Epic extends Task {
         this.subTaskIds.add(id);
     }
 
-    public void removeSubTask(int id){
+    public void removeSubTask(int id) {
         this.subTaskIds.remove(id);
     }
 
-    public void clearSubtasks(){
+    public void clearSubtasks() {
         subTaskIds.clear();
     }
 
     @Override
     public String toString() {
         return "Epic{" +
-               "id=" + super.getId() +
-               ", title='" + super.getTitle() + '\'' +
-               ", description='" + super.getDescription() + '\'' +
-               ", status=" + super.getStatus() +
-               "}\n";
+                "id=" + super.getId() +
+                ", title='" + super.getTitle() + '\'' +
+                ", description='" + super.getDescription() + '\'' +
+                ", status=" + super.getStatus() +
+                "}\n";
     }
 }
