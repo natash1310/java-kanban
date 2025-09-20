@@ -151,6 +151,10 @@ class InMemoryTaskManagerTest extends Task {
         assertEquals(subTask.getDescription(), subTaskFromManager.getDescription());
         assertEquals(Status.NEW, subTaskFromManager.getStatus());
         assertEquals(subTask.getEpicId(), subTaskFromManager.getEpicId());
+
+        subTask.setEpicId(6);
+        manager.createSubTask(subTask);
+        assertEquals(4, manager.getAllSubTask().size());
     }
 
     @Test
@@ -232,4 +236,29 @@ class InMemoryTaskManagerTest extends Task {
         assertTrue(history.contains(epic));
         assertTrue(history.contains(subTask));
     }
+
+    @Test
+    void tasksShouldBeEquals(){
+        Task task = manager.getTaskById(1);
+        Task task2 = manager.getTaskById(2);
+        task2.setId(1);
+        assertEquals(task, task2);
+    }
+
+    @Test
+    void subTasksShouldBeEquals(){
+        SubTask subTask = manager.getSubTaskById(5);
+        SubTask subTask2 = manager.getSubTaskById(6);
+        subTask2.setId(5);
+        assertEquals(subTask, subTask2);
+    }
+
+    @Test
+    void epicsShouldBeEquals(){
+        Epic epic = manager.getEpicById(3);
+        Epic epic2 = manager.getEpicById(4);
+        epic2.setId(3);
+        assertEquals(epic, epic2);
+    }
+
 }
