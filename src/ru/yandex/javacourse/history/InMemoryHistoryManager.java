@@ -3,11 +3,11 @@ package ru.yandex.javacourse.history;
 
 import ru.yandex.javacourse.tasks.Task;
 
-import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private final List<Task> history = new ArrayList<>();
+    private final List<Task> history = new LinkedList<>();
 
     @Override
     public void add(Task task) {

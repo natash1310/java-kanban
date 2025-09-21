@@ -1,56 +1,71 @@
 package ru.yandex.javacourse.tasks;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Тестовый класс для проверки методов класса Epic")
 class EpicTest extends Task {
 
     private Epic epic;
+    private final String titleOfEpic = "Test epic";
+    private final String descriptionOfEpic = "Test description";
+    private final int subTaskId = 2;
+    private final int subTaskId2 = 3;
 
     @BeforeEach
     void beforeEach() {
-        epic = new Epic("Test epic", "Test description");
+        //given
+        epic = new Epic(titleOfEpic, descriptionOfEpic);
     }
 
     @Test
-    void setSubTask() {
-        int subTaskId = 2;
+    @DisplayName("Метод корректно добавляет новый идентификатор в подзадачи")
+    void shouldAddSubTaskToEpic() {
+        //when
         epic.setSubTask(subTaskId);
-        assertFalse(epic.getSubTasks().isEmpty());
+        //then
+        assertFalse(epic.getSubTasks().isEmpty(), "Список подзадач не должен быть пуст после добавления");
+        assertTrue(epic.getSubTasks().contains(subTaskId), "Список подзадач должен содержать добавленную подзадачу");
     }
 
     @Test
-    void getSubTasks() {
-        int subTaskId = 2;
+    @DisplayName("Получение списка подзадач эпика после добавления подзадачи")
+    void shouldReturnSubTasksContainingAddedSubTask() {
+        //when
         epic.setSubTask(subTaskId);
-        assertTrue(epic.getSubTasks().contains(subTaskId));
+        //then
+        assertTrue(epic.getSubTasks().contains(subTaskId), "Список подзадач должен содержать добавленную подзадачу");
     }
 
 
     @Test
-    void removeSubTask() {
-        int subTaskId = 2;
-        int subTaskId2 = 3;
+    @DisplayName("Удаление подзадачи из эпика корректно обновляет список подзадач")
+    void shouldRemoveSubTaskFromEpic() {
         epic.setSubTask(subTaskId);
         epic.setSubTask(subTaskId2);
-        assertTrue(epic.getSubTasks().contains(subTaskId));
-        assertTrue(epic.getSubTasks().contains(subTaskId2));
+        assertTrue(epic.getSubTasks().contains(subTaskId), "Список должен содержать первую подзадачу");
+        assertTrue(epic.getSubTasks().contains(subTaskId2), "Список должен содержать вторую подзадачу");
+        //when
         epic.removeSubTask(subTaskId);
-        assertFalse(epic.getSubTasks().contains(subTaskId));
-        assertEquals(1, epic.getSubTasks().size());
+        //then
+        assertFalse(epic.getSubTasks().contains(subTaskId), "Первая подзадача должна быть удалена");
+        assertEquals(1, epic.getSubTasks().size(), "В списке должна остаться одна подзадача");
     }
 
     @Test
-    void clearSubtasks() {
-        int subTaskId = 2;
-        int subTaskId2 = 3;
+    @DisplayName("Чистка всех подзадач эпика должна опустошать список подзадач")
+    void shouldClearAllSubTasksFromEpic() {
         epic.setSubTask(subTaskId);
         epic.setSubTask(subTaskId2);
-        assertTrue(epic.getSubTasks().contains(subTaskId));
-        assertTrue(epic.getSubTasks().contains(subTaskId2));
+        assertTrue(epic.getSubTasks().contains(subTaskId), "Список должен содержать первую подзадачу");
+        assertTrue(epic.getSubTasks().contains(subTaskId2), "Список должен содержать вторую подзадачу");
+        //when
         epic.clearSubtasks();
-        assertTrue(epic.getSubTasks().isEmpty());
+        //then
+        assertTrue(epic.getSubTasks().isEmpty(), "Список подзадач должен быть пуст после очистки");
     }
+
 }

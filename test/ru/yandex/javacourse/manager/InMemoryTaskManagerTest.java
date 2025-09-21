@@ -1,6 +1,7 @@
 package ru.yandex.javacourse.manager;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.javacourse.tasks.Epic;
 import ru.yandex.javacourse.tasks.Status;
@@ -11,254 +12,365 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Тестовый класс для проверки методов класса InMemoryTaskManager")
 class InMemoryTaskManagerTest extends Task {
+
     private final InMemoryTaskManager manager = new InMemoryTaskManager();
+    private final String titleOfTask1 = "Задача 1";
+    private final String titleOfTask2 = "Задача 2";
+    private final String titleOfTask3 = "Задача 3";
+    private final String titleOfEpic1 = "Эпик 1";
+    private final String titleOfEpic2 = "Эпик 2";
+    private final String titleOfEpic3 = "Эпик 3";
+    private final String titleOfSubTask1 = "Подзадача 1";
+    private final String titleOfSubTask2 = "Подзадача 2";
+    private final String titleOfSubTask3 = "Подзадача 3";
+    private final String titleOfSubTask4 = "Подзадача 4";
+    private final String descriptionOfTask1 = "Описание задачи 1";
+    private final String descriptionOfTask2 = "Описание задачи 2";
+    private final String descriptionOfTask3 = "Описание задачи 3";
+    private final String descriptionOfEpic1 = "Описание эпика 1";
+    private final String descriptionOfEpic2 = "Описание эпика 2";
+    private final String descriptionOfEpic3 = "Описание эпика 3";
+    private final String descriptionOfSubTask1 = "Описание подзадачи 1";
+    private final String descriptionOfSubTask2 = "Описание подзадачи 2";
+    private final String descriptionOfSubTask3 = "Описание подзадачи 3";
+    private final String descriptionOfSubTask4 = "Описание подзадачи 4";
+    private final int taskId1 = 1;
+    private final int taskId2 = 2;
+    private final int epicId1 = 3;
+    private final int epicId2 = 4;
+    private final int subTaskId1 = 5;
+    private final int subTaskId2 = 6;
+    private final int subTaskId3 = 7;
+    private final int countOfTask = 2;
+    private final int countOfEpic = 2;
+    private final int countOfSubTask = 3;
 
     @BeforeEach
     public void setUp() {
+        //given
         manager.clearTasks();
         manager.clearSubTasks();
         manager.clearEpics();
         manager.resetIdCounter();
-
-        Task task1 = new Task("Задача 1", "Описание задачи 1");
-        Task task2 = new Task("Задача 2", "Описание задачи 2");
+        Task task1 = new Task(titleOfTask1, descriptionOfTask1);
+        Task task2 = new Task(titleOfTask2, descriptionOfTask2);
         manager.createTask(task1);
         manager.createTask(task2);
-        Epic epic1 = new Epic("Эпик 1", "Описание эпика 1");
-        Epic epic2 = new Epic("Эпик 2", "Описание эпика 2");
+        Epic epic1 = new Epic(titleOfEpic1, descriptionOfEpic1);
+        Epic epic2 = new Epic(titleOfEpic2, descriptionOfEpic2);
         manager.createEpic(epic1);
         manager.createEpic(epic2);
-        SubTask subTask1 = new SubTask("Подзадача 1", "Описание подзадачи 1", epic1.getId());
-        SubTask subTask2 = new SubTask("Подзадача 2", "Описание подзадачи 2", epic2.getId());
-        SubTask subTask3 = new SubTask("Подзадача 3", "Описание подзадачи 3", epic2.getId());
+        SubTask subTask1 = new SubTask(titleOfSubTask1, descriptionOfSubTask1, epic1.getId());
+        SubTask subTask2 = new SubTask(titleOfSubTask2, descriptionOfSubTask2, epic2.getId());
+        SubTask subTask3 = new SubTask(titleOfSubTask3, descriptionOfSubTask3, epic2.getId());
         manager.createSubTask(subTask1);
         manager.createSubTask(subTask2);
         manager.createSubTask(subTask3);
     }
 
     @Test
-    void getAllTasks() {
-        assertEquals(2, manager.getAllTasks().size());
+    @DisplayName("Проверка получения списка всех задач")
+    void shouldGetAllTasksTest() {
+        assertEquals(countOfTask, manager.getAllTasks().size());
     }
 
     @Test
-    void getAllEpics() {
-        assertEquals(2, manager.getAllEpics().size());
+    @DisplayName("Проверка получения списка всех эпиков")
+    void shouldGetAllEpicsTest() {
+        assertEquals(countOfEpic, manager.getAllEpics().size());
     }
 
     @Test
-    void getAllSubTask() {
-        assertEquals(3, manager.getAllSubTask().size());
+    @DisplayName("Проверка получения списка всех подзадач")
+    void shouldGetAllSubTaskTest() {
+        assertEquals(countOfSubTask, manager.getAllSubTask().size());
     }
 
     @Test
-    void clearTasks() {
-        assertEquals(2, manager.getAllTasks().size());
+    @DisplayName("Удаление всех задач")
+    void shouldClearAllTasksTest() {
+        //when
+        assertEquals(countOfTask, manager.getAllTasks().size());
         manager.clearTasks();
+        //then
         assertTrue(manager.getAllTasks().isEmpty());
     }
 
     @Test
-    void clearEpics() {
-        assertEquals(2, manager.getAllEpics().size());
+    @DisplayName("Удаление всех эпиков")
+    void shouldClearAllEpicsTest() {
+        //when
+        assertEquals(countOfEpic, manager.getAllEpics().size());
         manager.clearEpics();
+        //then
         assertTrue(manager.getAllEpics().isEmpty());
     }
 
     @Test
-    void clearSubTasks() {
-        assertEquals(3, manager.getAllSubTask().size());
+    @DisplayName("Удаление всех подзадач")
+    void shouldClearAllSubTasks_whenCalled() {
+        //when
+        assertEquals(countOfSubTask, manager.getAllSubTask().size());
         manager.clearSubTasks();
+        //then
         assertTrue(manager.getAllSubTask().isEmpty());
     }
 
     @Test
-    void getTaskById() {
-        Task task = manager.getTaskById(1);
+    @DisplayName("Получение задачи по идентификатору успешно")
+    void shouldGetTaskById_whenTaskExists() {
+        //when
+        Task task = manager.getTaskById(taskId1);
+        //then
         assertNotNull(task);
-        assertEquals(1, task.getId());
-        assertEquals("Задача 1", task.getTitle());
-        assertEquals("Описание задачи 1", task.getDescription());
+        assertEquals(taskId1, task.getId());
+        assertEquals(titleOfTask1, task.getTitle());
+        assertEquals(descriptionOfTask1, task.getDescription());
         assertEquals(Status.NEW, task.getStatus());
     }
 
+
     @Test
-    void getSubTaskById() {
-        SubTask subTask = manager.getSubTaskById(5);
+    @DisplayName("Получение задач по индентификатору")
+    void shouldGetSubTaskById_whenSubTaskExists() {
+        //when
+        SubTask subTask = manager.getSubTaskById(subTaskId1);
+        //then
         assertNotNull(subTask);
-        assertEquals(5, subTask.getId());
-        assertEquals("Подзадача 1", subTask.getTitle());
-        assertEquals("Описание подзадачи 1", subTask.getDescription());
+        assertEquals(subTaskId1, subTask.getId());
+        assertEquals(titleOfSubTask1, subTask.getTitle());
+        assertEquals(descriptionOfSubTask1, subTask.getDescription());
         assertEquals(Status.NEW, subTask.getStatus());
-        assertEquals(3, subTask.getEpicId());
+        assertEquals(epicId1, subTask.getEpicId());
     }
 
     @Test
-    void getEpicById() {
-        Epic epic = manager.getEpicById(3);
-        assertNotNull(epic);
-        assertEquals(3, epic.getId());
-        assertEquals("Эпик 1", epic.getTitle());
-        assertEquals("Описание эпика 1", epic.getDescription());
-        assertEquals(Status.NEW, epic.getStatus());
-        assertEquals(1, epic.getSubTasks().size());
-        assertTrue(epic.getSubTasks().contains(5));
+    @DisplayName("Получение эпика по идентификатору")
+    void shouldGetEpicById_whenEpicExists() {
+        //when
+        Epic epic = manager.getEpicById(epicId1);
+        //then
+        assertNotNull(epic, "Эпик не должен быть null");
+        assertEquals(epicId1, epic.getId(), "Неверный id эпика");
+        assertEquals(titleOfEpic1, epic.getTitle(), "Неверный заголовок эпика");
+        assertEquals(descriptionOfEpic1, epic.getDescription(), "Неверное описание эпика");
+        assertEquals(Status.NEW, epic.getStatus(), "Неверный статус эпика");
+        assertEquals(1, epic.getSubTasks().size(), "Неверное количество подзадач в эпике");
+        assertTrue(epic.getSubTasks().contains(subTaskId1), "Эпик должен содержать подзадачу с id=5");
     }
 
+
     @Test
-    void getSubTasksByEpic() {
-        Epic epic = manager.getEpicById(4);
+    @DisplayName("Получение списка подзадач по эпику")
+    void shouldGetSubTasksByEpic() {
+        //given
+        Epic epic = manager.getEpicById(epicId2);
+        //when
         List<SubTask> subTasks = manager.getSubTasksByEpic(epic);
-        assertNotNull(subTasks);
-        assertEquals(2, subTasks.size());
-        assertEquals(6, subTasks.getFirst().getId());
-        assertEquals(7, subTasks.getLast().getId());
+        //then
+        assertNotNull(subTasks, "Список подзадач не должен быть null");
+        assertEquals(2, subTasks.size(), "Неверное количество подзадач");
+        assertEquals(subTaskId2, subTasks.get(0).getId(), "Неверный id первой подзадачи");
+        assertEquals(subTaskId3, subTasks.get(1).getId(), "Неверный id последней подзадачи");
     }
 
+
     @Test
-    void createTask() {
-        Task task = new Task("Задача 3", "Описание задачи 3");
+    @DisplayName("Создание новой задачи")
+    void shouldCreateTask() {
+        //given
+        Task task = new Task(titleOfTask3, descriptionOfTask3);
+        //when
         manager.createTask(task);
-        assertEquals(3, manager.getAllTasks().size());
-        Task taskFromManager = manager.getTaskById(8);
-        assertNotNull(taskFromManager);
-        assertEquals(task.getTitle(), taskFromManager.getTitle());
-        assertEquals(task.getDescription(), taskFromManager.getDescription());
-        assertEquals(Status.NEW, taskFromManager.getStatus());
+        // then
+        assertEquals(countOfTask + 1, manager.getAllTasks().size(), "Общее количество задач должно быть 3");
+        Task taskFromManager = manager.getTaskById(task.getId());
+        assertNotNull(taskFromManager, "Задача должна быть найдена по id");
+        assertEquals(task.getTitle(), taskFromManager.getTitle(), "Заголовок задачи должен совпадать");
+        assertEquals(task.getDescription(), taskFromManager.getDescription(), "Описание задачи должно совпадать");
+        assertEquals(Status.NEW, taskFromManager.getStatus(), "Статус новой задачи должен быть NEW");
     }
 
+
     @Test
-    void createEpic() {
-        Epic epic = new Epic("Эпик 3", "Описание эпика 3");
+    @DisplayName("Создание нового эпика")
+    void shouldCreateEpic() {
+        //given
+        Epic epic = new Epic(titleOfEpic3, descriptionOfEpic3);
+        //when
         manager.createEpic(epic);
-        assertEquals(3, manager.getAllEpics().size());
-        Epic epicFromManager = manager.getEpicById(8);
-        assertNotNull(epicFromManager);
-        assertEquals(epic.getTitle(), epicFromManager.getTitle());
-        assertEquals(epic.getDescription(), epicFromManager.getDescription());
-        assertEquals(Status.NEW, epicFromManager.getStatus());
+        //then
+        assertEquals(countOfEpic + 1, manager.getAllEpics().size(), "Количество эпиков должно быть равно 3");
+        Epic epicFromManager = manager.getEpicById(epic.getId());
+        assertNotNull(epicFromManager, "Эпик должен быть найден по id");
+        assertEquals(epic.getTitle(), epicFromManager.getTitle(), "Заголовок эпика должен совпадать");
+        assertEquals(epic.getDescription(), epicFromManager.getDescription(), "Описание эпика должно совпадать");
+        assertEquals(Status.NEW, epicFromManager.getStatus(), "Статус нового эпика должен быть NEW");
     }
 
     @Test
-    void createSubTask() {
-        SubTask subTask = new SubTask("Подзадача 4", "Описание подзадачи 4", 3);
+    @DisplayName("Создание новой подзадачи")
+    void shouldCreateSubTask() {
+        // given
+        SubTask subTask = new SubTask(titleOfSubTask4, descriptionOfSubTask4, 3);
+        // when
         manager.createSubTask(subTask);
-        assertEquals(4, manager.getAllSubTask().size());
-        SubTask subTaskFromManager = manager.getSubTaskById(8);
-        assertNotNull(subTaskFromManager);
-        assertEquals(subTask.getTitle(), subTaskFromManager.getTitle());
-        assertEquals(subTask.getDescription(), subTaskFromManager.getDescription());
-        assertEquals(Status.NEW, subTaskFromManager.getStatus());
-        assertEquals(subTask.getEpicId(), subTaskFromManager.getEpicId());
-
+        // then
+        assertEquals(countOfSubTask + 1, manager.getAllSubTask().size(), "Количество подзадач должно быть 4");
+        SubTask subTaskFromManager = manager.getSubTaskById(subTask.getId());
+        assertNotNull(subTaskFromManager, "Подзадача должна быть найдена по id");
+        assertEquals(subTask.getTitle(), subTaskFromManager.getTitle(), "Заголовок подзадачи должен совпадать");
+        assertEquals(subTask.getDescription(), subTaskFromManager.getDescription(), "Описание подзадачи должно совпадать");
+        assertEquals(Status.NEW, subTaskFromManager.getStatus(), "Статус новой подзадачи должен быть NEW");
+        assertEquals(subTask.getEpicId(), subTaskFromManager.getEpicId(), "Идентификатор эпика должен совпадать");
         subTask.setEpicId(6);
         manager.createSubTask(subTask);
-        assertEquals(4, manager.getAllSubTask().size());
+        assertEquals(countOfSubTask + 1, manager.getAllSubTask().size(), "Количество подзадач не должно увеличиваться при повторном добавлении");
     }
 
+
     @Test
-    void updateTask() {
-        Task updatedTask = manager.getTaskById(1);
-        updatedTask.setDescription("Новое название задачи 1");
-        updatedTask.setTitle("Новое описание задачи 1");
+    @DisplayName("Обновление существующей задачи")
+    void shouldUpdateTask() {
+        //given
+        Task updatedTask = manager.getTaskById(taskId1);
+        updatedTask.setDescription("Новое описание задачи 1");
+        updatedTask.setTitle("Новое название задачи 1");
         updatedTask.setStatus(Status.DONE);
+        // when
         manager.updateTask(updatedTask);
-        Task taskFromManager = manager.getTaskById(1);
-        assertNotNull(taskFromManager);
-        assertEquals(updatedTask.getTitle(), taskFromManager.getTitle());
-        assertEquals(updatedTask.getDescription(), taskFromManager.getDescription());
-        assertEquals(updatedTask.getStatus(), taskFromManager.getStatus());
+        // then
+        Task taskFromManager = manager.getTaskById(taskId1);
+        assertNotNull(taskFromManager, "Задача не должна быть null после обновления");
+        assertEquals(updatedTask.getTitle(), taskFromManager.getTitle(), "Заголовок задачи не обновился");
+        assertEquals(updatedTask.getDescription(), taskFromManager.getDescription(), "Описание задачи не обновилось");
+        assertEquals(updatedTask.getStatus(), taskFromManager.getStatus(), "Статус задачи не обновился");
     }
 
     @Test
-    void updateEpic() {
-        Epic updatedEpic = manager.getEpicById(3);
-        updatedEpic.setDescription("Новое название эпика 1");
-        updatedEpic.setTitle("Новое описание эпика 1");
+    @DisplayName("Обновление существующего эпика")
+    void shouldUpdateEpic() {
+        // given
+        Epic updatedEpic = manager.getEpicById(epicId1);
+        updatedEpic.setDescription("Новое описание эпика 1");
+        updatedEpic.setTitle("Новое название эпика 1");
         updatedEpic.setStatus(Status.DONE);
+        // when
         manager.updateEpic(updatedEpic);
-        Epic epicFromManager = manager.getEpicById(3);
-        assertNotNull(epicFromManager);
-        assertEquals(updatedEpic.getTitle(), epicFromManager.getTitle());
-        assertEquals(updatedEpic.getDescription(), epicFromManager.getDescription());
-        assertEquals(updatedEpic.getStatus(), epicFromManager.getStatus());
+        // then
+        Epic epicFromManager = manager.getEpicById(epicId1);
+        assertNotNull(epicFromManager, "Эпик не должен быть null после обновления");
+        assertEquals(updatedEpic.getTitle(), epicFromManager.getTitle(), "Заголовок эпика не обновился");
+        assertEquals(updatedEpic.getDescription(), epicFromManager.getDescription(), "Описание эпика не обновилось");
+        assertEquals(updatedEpic.getStatus(), epicFromManager.getStatus(), "Статус эпика не обновился");
     }
 
+
     @Test
-    void updateSubTask() {
-        SubTask updatedSubTask = manager.getSubTaskById(5);
-        updatedSubTask.setDescription("Новое название подзадачи 1");
-        updatedSubTask.setTitle("Новое описание подзадачи 1");
+    @DisplayName("Обновление существующей подзадачи")
+    void shouldUpdateSubTask() {
+        // given
+        SubTask updatedSubTask = manager.getSubTaskById(subTaskId1);
+        updatedSubTask.setDescription("Новое описание подзадачи 1");
+        updatedSubTask.setTitle("Новое название подзадачи 1");
         updatedSubTask.setStatus(Status.DONE);
+        // when
         manager.updateSubTask(updatedSubTask);
-        SubTask subTaskFromManager = manager.getSubTaskById(5);
-        assertNotNull(subTaskFromManager);
-        assertEquals(updatedSubTask.getTitle(), subTaskFromManager.getTitle());
-        assertEquals(updatedSubTask.getDescription(), subTaskFromManager.getDescription());
-        assertEquals(updatedSubTask.getStatus(), subTaskFromManager.getStatus());
+        // then
+        SubTask subTaskFromManager = manager.getSubTaskById(subTaskId1);
+        assertNotNull(subTaskFromManager, "Подзадача не должна быть null после обновления");
+        assertEquals(updatedSubTask.getTitle(), subTaskFromManager.getTitle(), "Заголовок подзадачи не обновился");
+        assertEquals(updatedSubTask.getDescription(), subTaskFromManager.getDescription(), "Описание подзадачи не обновилось");
+        assertEquals(updatedSubTask.getStatus(), subTaskFromManager.getStatus(), "Статус подзадачи не обновился");
     }
 
-    @Test
-    void removeTaskById() {
-        assertEquals(2, manager.getAllTasks().size());
-        manager.removeTaskById(1);
-        assertEquals(1, manager.getAllTasks().size());
-        assertEquals(2, manager.getAllTasks().getFirst().getId());
-    }
 
     @Test
-    void removeEpicById() {
-        assertEquals(2, manager.getAllEpics().size());
-        manager.removeEpicById(3);
-        assertEquals(1, manager.getAllEpics().size());
-        assertEquals(4, manager.getAllEpics().getFirst().getId());
+    @DisplayName("Удаление задачи по идентификатору")
+    void shouldRemoveTaskById() {
+        //given
+        assertEquals(countOfTask, manager.getAllTasks().size(), "Изначально должно быть 2 задачи");
+        //when
+        manager.removeTaskById(taskId1);
+        //then
+        assertEquals(1, manager.getAllTasks().size(), "После удаления должно остаться 1 задача");
+        assertEquals(taskId2, manager.getAllTasks().getFirst().getId(), "Оставшаяся задача должна иметь id=2");
     }
 
-    @Test
-    void removeSubTaskByIdAndEpicId() {
-        manager.removeSubTaskByIdAndEpicId(5, 3);
-        assertNull(manager.getSubTaskById(5));
-        assertFalse(manager.getEpicById(3).getSubTasks().contains(5));
-    }
 
     @Test
-    void getHistory() {
+    @DisplayName("Удаление эпика по идентификатору")
+    void shouldRemoveEpicById() {
+        //given
+        assertEquals(countOfEpic, manager.getAllEpics().size(), "Изначально должно быть 2 эпика");
+        //when
+        manager.removeEpicById(epicId1);
+        //then
+        assertEquals(1, manager.getAllEpics().size(), "После удаления должен остаться 1 эпик");
+        assertEquals(epicId2, manager.getAllEpics().getFirst().getId(), "Оставшийся эпик должен иметь id=4");
+    }
+
+
+    @Test
+    @DisplayName("Удаление подзадачи по идентификатору и идентификатору эпика")
+    void shouldRemoveSubTaskByIdAndEpicId() {
+        //when
+        manager.removeSubTaskByIdAndEpicId(subTaskId1, epicId1);
+        //then
+        assertNull(manager.getSubTaskById(subTaskId1), "Подзадача должна быть удалена");
+        assertFalse(manager.getEpicById(epicId1).getSubTasks().contains(subTaskId1), "Подзадача не должна присутствовать в эпике");
+    }
+
+
+    @Test
+    @DisplayName("Проверка получения истории")
+    void shouldGetHistory() {
+        //given
         List<Task> history = manager.getHistory();
-        assertTrue(history.isEmpty());
-        Task task = manager.getTaskById(1);
-        Epic epic = manager.getEpicById(3);
-        SubTask subTask = manager.getSubTaskById(5);
+        assertTrue(history.isEmpty(), "История изначально должна быть пустой");
+        //when
+        Task task = manager.getTaskById(taskId1);
+        Epic epic = manager.getEpicById(epicId1);
+        SubTask subTask = manager.getSubTaskById(subTaskId1);
+        //then
         history = manager.getHistory();
-        assertFalse(history.isEmpty());
-        assertEquals(3, history.size());
-        assertTrue(history.contains(task));
-        assertTrue(history.contains(epic));
-        assertTrue(history.contains(subTask));
+        assertFalse(history.isEmpty(), "История не должна быть пустой после получения задач");
+        assertEquals(3, history.size(), "История должна содержать 3 задачи");
+        assertTrue(history.contains(task), "История должна содержать задачу");
+        assertTrue(history.contains(epic), "История должна содержать эпик");
+        assertTrue(history.contains(subTask), "История должна содержать подзадачу");
+    }
+
+
+    @Test
+    @DisplayName("Задачи с одинаковым id считаются равными")
+    void tasksShouldBeEquals() {
+        Task task = manager.getTaskById(taskId1);
+        Task task2 = manager.getTaskById(taskId2);
+        task2.setId(taskId1);
+        assertEquals(task, task2, "Задачи с одинаковым id должны быть равны");
     }
 
     @Test
-    void tasksShouldBeEquals(){
-        Task task = manager.getTaskById(1);
-        Task task2 = manager.getTaskById(2);
-        task2.setId(1);
-        assertEquals(task, task2);
+    @DisplayName("Подзадачи с одинаковым id считаются равными")
+    void subTasksShouldBeEquals() {
+        SubTask subTask = manager.getSubTaskById(subTaskId1);
+        SubTask subTask2 = manager.getSubTaskById(subTaskId2);
+        subTask2.setId(subTaskId1);
+        assertEquals(subTask, subTask2, "Подзадачи с одинаковым id должны быть равны");
     }
 
-    @Test
-    void subTasksShouldBeEquals(){
-        SubTask subTask = manager.getSubTaskById(5);
-        SubTask subTask2 = manager.getSubTaskById(6);
-        subTask2.setId(5);
-        assertEquals(subTask, subTask2);
-    }
 
     @Test
-    void epicsShouldBeEquals(){
-        Epic epic = manager.getEpicById(3);
-        Epic epic2 = manager.getEpicById(4);
-        epic2.setId(3);
-        assertEquals(epic, epic2);
+    @DisplayName("Эпики с одинаковым id считаются равными")
+    void epicsShouldBeEquals() {
+        Epic epic = manager.getEpicById(epicId1);
+        Epic epic2 = manager.getEpicById(epicId2);
+        epic2.setId(epicId1);
+        assertEquals(epic, epic2, "Эпики с одинаковым id должны быть равны");
     }
+
 
 }

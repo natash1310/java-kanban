@@ -1,5 +1,6 @@
 package ru.yandex.javacourse.history;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.javacourse.tasks.Epic;
 import ru.yandex.javacourse.tasks.SubTask;
@@ -10,16 +11,28 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@DisplayName("Тестовый класс для проверки методов класса InMemoryHistoryManager")
 class InMemoryHistoryManagerTest extends Task {
 
     private final InMemoryHistoryManager inMemoryHistoryManager = new InMemoryHistoryManager();
+    private final String titleOfTask = "Задача 1";
+    private final String descriptionOfTask = "Описание задачи 1";
+    private final String titleOfEpic = "Эпик 1";
+    private final String descriptionOfEpic = "Описание эпика 1";
+    private final String titleOfSubTask = "Подзадача 1";
+    private final String descriptionOfSubTask = "Описание подзадачи 1";
+    private final int epicId = 1;
+    private final int countOfTask = 3;
 
     @Test
-    void add() {
+    @DisplayName("Проверка добавления разных задач в историю")
+    void addTasksToEmptyHistoryTest() {
+        //given
         assertTrue(inMemoryHistoryManager.getHistory().isEmpty());
-        Task task = new Task("Задача 1", "Описание задачи 1");
-        Epic epic = new Epic("Эпик 1", "Описание эпика 1");
-        SubTask subTask = new SubTask("Подзадача 1", "Описание подхадачи 1", 1);
+        Task task = new Task(titleOfTask, descriptionOfTask);
+        Epic epic = new Epic(titleOfEpic, descriptionOfEpic);
+        SubTask subTask = new SubTask(titleOfSubTask, descriptionOfSubTask, epicId);
+        //when
         inMemoryHistoryManager.add(task);
         inMemoryHistoryManager.add(epic);
         inMemoryHistoryManager.add(subTask);
@@ -27,15 +40,20 @@ class InMemoryHistoryManagerTest extends Task {
         tasks.add(task);
         tasks.add(epic);
         tasks.add(subTask);
-        assertEquals(3, inMemoryHistoryManager.getHistory().size());
+        //then
+        assertEquals(countOfTask, inMemoryHistoryManager.getHistory().size());
         assertArrayEquals(tasks.toArray(), inMemoryHistoryManager.getHistory().toArray());
     }
 
     @Test
-    void getHistory() {
+    @DisplayName("Проверка получения списка истории")
+    void getHistoryTest() {
+        //given
         assertTrue(inMemoryHistoryManager.getHistory().isEmpty());
         Task task = new Task();
+        //when
         inMemoryHistoryManager.add(task);
+        //then
         assertFalse(inMemoryHistoryManager.getHistory().isEmpty());
     }
 }
