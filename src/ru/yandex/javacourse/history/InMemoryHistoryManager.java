@@ -92,9 +92,10 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void remove(int id) {
-        taskCustomLinkedList.removeNode(taskHashMap.get(id));
-        taskHashMap.remove(id);
-
+        if (taskHashMap.containsKey(id)) {
+            taskCustomLinkedList.removeNode(taskHashMap.get(id));
+            taskHashMap.remove(id);
+        }
     }
 
     @Override
