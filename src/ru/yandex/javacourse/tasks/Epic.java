@@ -12,6 +12,11 @@ public class Epic extends Task {
         this.subTaskIds = new HashSet<>();
     }
 
+    public Epic(int id, String title, String description, Status status) {
+        super(id, title, description, status);
+        this.subTaskIds = new HashSet<>();
+    }
+
     public Set<Integer> getSubTasks() {
         return subTaskIds;
     }
@@ -26,6 +31,11 @@ public class Epic extends Task {
 
     public void clearSubtasks() {
         subTaskIds.clear();
+    }
+
+    @Override
+    public String getType() {
+        return "EPIC";
     }
 
     @Override
