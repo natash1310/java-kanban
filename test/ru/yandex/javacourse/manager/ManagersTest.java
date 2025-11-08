@@ -13,7 +13,7 @@ class ManagersTest extends Task {
     @Test
     @DisplayName("Получение дефолтного менеджера задач")
     void getDefault() {
-        assertEquals(InMemoryTaskManager.class, Managers.getDefault().getClass());
+        assertEquals(FileBackedTaskManager.class, Managers.getDefault().getClass());
     }
 
     @Test

@@ -6,6 +6,7 @@ import ru.yandex.javacourse.tasks.SubTask;
 import ru.yandex.javacourse.tasks.Task;
 
 import java.util.List;
+import java.util.TreeSet;
 
 public interface TaskManager {
     List<Task> getAllTasks();
@@ -45,4 +46,8 @@ public interface TaskManager {
     void removeEpicById(int id);
 
     void removeSubTaskByIdAndEpicId(int id, int epicId);
+
+    List<Task> getHistory();
+
+    TreeSet<Task> getPrioritizedTasks();
 }
