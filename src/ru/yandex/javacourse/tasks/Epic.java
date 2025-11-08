@@ -1,5 +1,6 @@
 package ru.yandex.javacourse.tasks;
 
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,6 +17,13 @@ public class Epic extends Task {
         super(id, title, description, status);
         this.subTaskIds = new HashSet<>();
     }
+
+    public Epic(int id, String title, String description, Status status, long duration,
+                LocalDateTime start, LocalDateTime end) {
+        super(id, title, description, status, duration, start, end);
+        this.subTaskIds = new HashSet<>();
+    }
+
 
     public Set<Integer> getSubTasks() {
         return subTaskIds;
@@ -40,11 +48,14 @@ public class Epic extends Task {
 
     @Override
     public String toString() {
-        return "Epic{" +
-                "id=" + super.getId() +
-                ", title='" + super.getTitle() + '\'' +
+        return "\n tasks.Epic{" +
+                "id=" + super.getId() + '\'' +
+                ", name='" + super.getTitle() + '\'' +
                 ", description='" + super.getDescription() + '\'' +
-                ", status=" + super.getStatus() +
-                "}\n";
+                ", status='" + super.getStatus() + '\'' +
+                ", Duration=" + super.getDuration() + '\'' +
+                ", Start=" + super.getStartTime() + '\'' +
+                ", End=" + super.getEndTime() + '\'' +
+                '}';
     }
 }

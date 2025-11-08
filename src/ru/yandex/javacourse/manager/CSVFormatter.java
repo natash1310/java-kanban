@@ -2,13 +2,14 @@ package ru.yandex.javacourse.manager;
 
 import ru.yandex.javacourse.tasks.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CSVFormatter {
 
     public static String getHeader() {
-        return "id,type,name,status,description,epic";
+        return "id,type,name,description,status,epic,duration,startTime,endTime";
     }
 
     public static List<Integer> historyFromString(String s) {
@@ -36,13 +37,32 @@ public class CSVFormatter {
 
     public static Task taskFromString(String[] value) {
         if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.TASK)) {
-            return new Task(Integer.parseInt(value[0]), value[2], value[4], Status.valueOf(value[3]));
+            return new Task(Integer.parseInt(value[0]),
+                    value[2],
+                    value[4],
+                    Status.valueOf(value[3]),
+                    Long.parseLong(value[6]),
+                    parseDateTime(value[7]),
+                    parseDateTime(value[8]));
         }
         if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.EPIC)) {
-            return new Epic(Integer.parseInt(value[0]), value[2], value[4], Status.valueOf(value[3]));
+            return new Epic(Integer.parseInt(value[0]),
+                    value[2],
+                    value[4],
+                    Status.valueOf(value[3]),
+                    Long.parseLong(value[6]),
+                    parseDateTime(value[7]),
+                    parseDateTime(value[8]));
         }
         if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.SUBTASK)) {
-            return new SubTask(Integer.parseInt(value[0]), value[2], value[4], Status.valueOf(value[3]), Integer.parseInt(value[5]));
+            return new SubTask(Integer.parseInt(value[0]),
+                    value[2],
+                    value[4],
+                    Status.valueOf(value[3]),
+                    Integer.parseInt(value[5]),
+                    Long.parseLong(value[6]),
+                    parseDateTime(value[7]),
+                    parseDateTime(value[8]));
         }
         return null;
     }
@@ -54,7 +74,17 @@ public class CSVFormatter {
                 + task.getTitle() + ","
                 + task.getStatus() + ","
                 + task.getDescription() + ","
-                + (task instanceof SubTask ? ((SubTask) task).getEpicId() : "");
+                + (task instanceof SubTask ? ((SubTask) task).getEpicId() : "") + ","
+                + task.getDuration() + ","
+                + task.getStartTime() + ","
+                + task.getEndTime();
         return line;
+    }
+
+    private static LocalDateTime parseDateTime(String dateTimeStr) {
+        if (dateTimeStr == null || dateTimeStr.equals("null") || dateTimeStr.trim().isEmpty()) {
+            return null;
+        }
+        return LocalDateTime.parse(dateTimeStr);
     }
 }
