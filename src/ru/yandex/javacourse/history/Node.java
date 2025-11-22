@@ -10,6 +10,12 @@ public class Node {
     private Node next;
     private Node previous;
 
+    public Node(Task task, Node next, Node previous) {
+        this.data = task;
+        this.next = next;
+        this.previous = previous;
+    }
+
     @Override
     public String toString() {
         return "Node{" +
@@ -21,12 +27,6 @@ public class Node {
     }
 
     public void setPreviousNode(Node previous) {
-        this.previous = previous;
-    }
-
-    public Node(Task task, Node next, Node previous) {
-        this.data = task;
-        this.next = next;
         this.previous = previous;
     }
 

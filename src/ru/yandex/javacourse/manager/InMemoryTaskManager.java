@@ -1,5 +1,6 @@
 package ru.yandex.javacourse.manager;
 
+import ru.yandex.javacourse.exception.NotFoundException;
 import ru.yandex.javacourse.exception.TaskValidationException;
 import ru.yandex.javacourse.history.HistoryManager;
 import ru.yandex.javacourse.tasks.Epic;
@@ -19,18 +20,18 @@ public class InMemoryTaskManager implements TaskManager {
     protected final HashMap<Integer, Epic> epics;
     protected final HashMap<Integer, SubTask> subTasks;
     protected final TreeSet<Task> prioritizedTasks;
-    protected int idCounter = 1;
     protected final HistoryManager historyManager = Managers.getDefaultHistory();
-
-    public void resetIdCounter() {
-        this.idCounter = 1;
-    }
+    protected int idCounter = 1;
 
     public InMemoryTaskManager() {
         this.tasks = new HashMap<>();
         this.epics = new HashMap<>();
         this.subTasks = new HashMap<>();
         this.prioritizedTasks = new TreeSet<>();
+    }
+
+    public void resetIdCounter() {
+        this.idCounter = 1;
     }
 
     public List<Task> getAllTasks() {
@@ -74,8 +75,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(task);
             return task;
         } else {
-            System.out.println("Задачи с id: " + id + " нет");
-            return null;
+            throw new NotFoundException("Задачи с id: " + id + " нет");
         }
     }
 
@@ -85,8 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(subTask);
             return subTask;
         } else {
-            System.out.println("Подзадачи с id: " + id + " нет");
-            return null;
+            throw new NotFoundException("Подзадачи с id: " + id + " нет");
         }
     }
 
@@ -96,8 +95,7 @@ public class InMemoryTaskManager implements TaskManager {
             historyManager.add(epic);
             return epic;
         } else {
-            System.out.println("Эпика с id: " + id + " нет");
-            return null;
+            throw new NotFoundException("Эпика с id: " + id + " нет");
         }
     }
 
@@ -232,6 +230,22 @@ public class InMemoryTaskManager implements TaskManager {
             }
         } else {
             System.out.println("Эпика с id: " + epicId + " нет");
+        }
+    }
+
+    @Override
+    public void removeSubTaskById(int id) {
+        if (subTasks.containsKey(id)) {
+            Epic epic = epics.get(subTasks.get(id).getEpicId());
+            if (epic.getSubTasks().contains(id)) {
+                epic.removeSubTask(id);
+                subTasks.remove(id);
+                historyManager.remove(id);
+            } else {
+                System.out.println("У эпика с id: " + epic.getId() + " нет подзадачи с id: " + id);
+            }
+        } else {
+            System.out.println("Подзадачи с id: " + id + " нет");
         }
     }
 

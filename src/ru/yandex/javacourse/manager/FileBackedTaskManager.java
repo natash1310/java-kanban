@@ -18,6 +18,49 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
         this.file = file;
     }
 
+    public static FileBackedTaskManager loadFromFile(File file) {
+        FileBackedTaskManager manager = new FileBackedTaskManager(file);
+        try (BufferedReader b = new BufferedReader(new FileReader(file))) {
+            b.readLine();
+
+            while (b.ready()) {
+                String line = b.readLine();
+                if (line == null || line.trim().isEmpty()) {
+                    if (b.ready()) {
+                        String idString = b.readLine();
+                        if (idString != null && !idString.trim().isEmpty()) {
+                            List<Integer> idList = CSVFormatter.historyFromString(idString);
+                            for (Integer integer : idList) {
+                                if (manager.tasks.containsKey(integer)) {
+                                    manager.historyManager.add(manager.tasks.get(integer));
+                                } else if (manager.subTasks.containsKey(integer)) {
+                                    manager.historyManager.add(manager.subTasks.get(integer));
+                                } else if (manager.epics.containsKey(integer)) {
+                                    manager.historyManager.add(manager.epics.get(integer));
+                                }
+                            }
+                        }
+                    }
+                    break;
+                }
+
+                String[] lines = line.split(",");
+                if (lines.length > 1) {
+                    if (lines[1].equals(TypeOfTask.TASK.toString())) {
+                        manager.restoreTask(CSVFormatter.taskFromString(lines));
+                    } else if (lines[1].equals(TypeOfTask.EPIC.toString())) {
+                        manager.restoreEpic((Epic) CSVFormatter.taskFromString(lines));
+                    } else if (lines[1].equals(TypeOfTask.SUBTASK.toString())) {
+                        manager.restoreSubtask((SubTask) Objects.requireNonNull(CSVFormatter.taskFromString(lines)));
+                    }
+                }
+            }
+        } catch (IOException e) {
+            throw new ManagerSaveException("Ошибка при чтении файла: " + file.getName());
+        }
+        return manager;
+    }
+
     @Override
     public void createTask(Task task) {
         super.createTask(task);
@@ -63,6 +106,12 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
     }
 
     @Override
+    public void removeSubTaskById(int id) {
+        super.removeSubTaskById(id);
+        save();
+    }
+
+    @Override
     public void removeEpicById(int id) {
         super.removeEpicById(id);
         save();
@@ -97,49 +146,6 @@ public class FileBackedTaskManager extends InMemoryTaskManager {
                 idCounter = subtask.getId() + 1;
             }
         }
-    }
-
-    public static FileBackedTaskManager loadFromFile(File file) {
-        FileBackedTaskManager manager = new FileBackedTaskManager(file);
-        try (BufferedReader b = new BufferedReader(new FileReader(file))) {
-            b.readLine();
-
-            while (b.ready()) {
-                String line = b.readLine();
-                if (line == null || line.trim().isEmpty()) {
-                    if (b.ready()) {
-                        String idString = b.readLine();
-                        if (idString != null && !idString.trim().isEmpty()) {
-                            List<Integer> idList = CSVFormatter.historyFromString(idString);
-                            for (Integer integer : idList) {
-                                if (manager.tasks.containsKey(integer)) {
-                                    manager.historyManager.add(manager.tasks.get(integer));
-                                } else if (manager.subTasks.containsKey(integer)) {
-                                    manager.historyManager.add(manager.subTasks.get(integer));
-                                } else if (manager.epics.containsKey(integer)) {
-                                    manager.historyManager.add(manager.epics.get(integer));
-                                }
-                            }
-                        }
-                    }
-                    break;
-                }
-
-                String[] lines = line.split(",");
-                if (lines.length > 1) {
-                    if (lines[1].equals(TypeOfTask.TASK.toString())) {
-                        manager.restoreTask(CSVFormatter.taskFromString(lines));
-                    } else if (lines[1].equals(TypeOfTask.EPIC.toString())) {
-                        manager.restoreEpic((Epic) CSVFormatter.taskFromString(lines));
-                    } else if (lines[1].equals(TypeOfTask.SUBTASK.toString())) {
-                        manager.restoreSubtask((SubTask) Objects.requireNonNull(CSVFormatter.taskFromString(lines)));
-                    }
-                }
-            }
-        } catch (IOException e) {
-            throw new ManagerSaveException("Ошибка при чтении файла: " + file.getName());
-        }
-        return manager;
     }
 
     public void save() {

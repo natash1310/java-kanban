@@ -16,6 +16,51 @@ public class InMemoryHistoryManager implements HistoryManager {
         taskHashMap = new HashMap<>();
     }
 
+    private ArrayList<Task> getAllTasks() {
+        ArrayList<Task> taskHistory = new ArrayList<>();
+        if (taskCustomLinkedList.getHead() == null) {
+            return taskHistory;
+        } else {
+            Node currentNode = taskCustomLinkedList.getHead();
+            while (currentNode != null) {
+                taskHistory.add(currentNode.getData());
+                currentNode = currentNode.getNextNode();
+            }
+        }
+
+        return taskHistory;
+    }
+
+    @Override
+    public void add(Task task) {
+        if (taskHashMap.containsKey(task.getId())) {
+            taskCustomLinkedList.removeNode(taskHashMap.get(task.getId()));
+        }
+        taskCustomLinkedList.insert(task);
+        taskHashMap.put(task.getId(), taskCustomLinkedList.getTail());
+    }
+
+    @Override
+    public void remove(int id) {
+        if (taskHashMap.containsKey(id)) {
+            taskCustomLinkedList.removeNode(taskHashMap.get(id));
+            taskHashMap.remove(id);
+        }
+    }
+
+    @Override
+    public ArrayList<Task> getHistory() {
+        return getAllTasks();
+    }
+
+    public HashMap<Integer, Node> getTaskHashMap() {
+        return taskHashMap;
+    }
+
+    public CustomLinkedList getTaskCustomLinkedList() {
+        return taskCustomLinkedList;
+    }
+
     public class CustomLinkedList {
         private Node head;
         private Node tail;
@@ -64,51 +109,6 @@ public class InMemoryHistoryManager implements HistoryManager {
             return tail;
         }
 
-    }
-
-    private ArrayList<Task> getAllTasks() {
-        ArrayList<Task> taskHistory = new ArrayList<>();
-        if (taskCustomLinkedList.getHead() == null) {
-            return taskHistory;
-        } else {
-            Node currentNode = taskCustomLinkedList.getHead();
-            while (currentNode != null) {
-                taskHistory.add(currentNode.getData());
-                currentNode = currentNode.getNextNode();
-            }
-        }
-
-        return taskHistory;
-    }
-
-    @Override
-    public void add(Task task) {
-        if (taskHashMap.containsKey(task.getId())) {
-            taskCustomLinkedList.removeNode(taskHashMap.get(task.getId()));
-        }
-        taskCustomLinkedList.insert(task);
-        taskHashMap.put(task.getId(), taskCustomLinkedList.getTail());
-    }
-
-    @Override
-    public void remove(int id) {
-        if (taskHashMap.containsKey(id)) {
-            taskCustomLinkedList.removeNode(taskHashMap.get(id));
-            taskHashMap.remove(id);
-        }
-    }
-
-    @Override
-    public ArrayList<Task> getHistory() {
-        return getAllTasks();
-    }
-
-    public HashMap<Integer, Node> getTaskHashMap() {
-        return taskHashMap;
-    }
-
-    public CustomLinkedList getTaskCustomLinkedList() {
-        return taskCustomLinkedList;
     }
 
 }

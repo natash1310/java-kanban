@@ -3,6 +3,7 @@ package ru.yandex.javacourse.manager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import ru.yandex.javacourse.exception.NotFoundException;
 import ru.yandex.javacourse.exception.TaskValidationException;
 import ru.yandex.javacourse.tasks.Epic;
 import ru.yandex.javacourse.tasks.Status;
@@ -155,10 +156,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     @DisplayName("Получение задачи по ID - задача не существует")
-    void shouldReturnNull_whenTaskDoesNotExist() {
-        Task retrievedTask = manager.getTaskById(999);
-
-        assertNull(retrievedTask);
+    void shouldThrowNotFoundException_whenTaskDoesNotExist() {
+        assertThrows(NotFoundException.class, () -> manager.getTaskById(999));
     }
 
     @Test
@@ -174,10 +173,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     @DisplayName("Получение эпика по ID - эпик не существует")
-    void shouldReturnNull_whenEpicDoesNotExist() {
-        Epic retrievedEpic = manager.getEpicById(999);
-
-        assertNull(retrievedEpic);
+    void shouldThrowNotFoundException_whenEpicDoesNotExist() {
+        assertThrows(NotFoundException.class, () -> manager.getEpicById(999));
     }
 
     @Test
@@ -196,10 +193,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
 
     @Test
     @DisplayName("Получение подзадачи по ID - подзадача не существует")
-    void shouldReturnNull_whenSubTaskDoesNotExist() {
-        SubTask retrievedSubTask = manager.getSubTaskById(999);
-
-        assertNull(retrievedSubTask);
+    void shouldThrowNotFoundException_whenSubTaskDoesNotExist() {
+        assertThrows(NotFoundException.class, () -> manager.getSubTaskById(999));
     }
 
     @Test
@@ -245,10 +240,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
     @DisplayName("Удаление задачи по ID")
     void shouldRemoveTaskById() {
         manager.createTask(task1);
-
         manager.removeTaskById(task1.getId());
-
-        assertNull(manager.getTaskById(task1.getId()));
+        assertThrows(NotFoundException.class, () -> manager.getTaskById(task1.getId()));
     }
 
     @Test
@@ -258,12 +251,10 @@ abstract class TaskManagerTest<T extends TaskManager> {
         createSubTasksForEpic1();
         manager.createSubTask(subTask1);
         manager.createSubTask(subTask2);
-
         manager.removeEpicById(epic1.getId());
-
-        assertNull(manager.getEpicById(epic1.getId()));
-        assertNull(manager.getSubTaskById(subTask1.getId()));
-        assertNull(manager.getSubTaskById(subTask2.getId()));
+        assertThrows(NotFoundException.class, () -> manager.getEpicById(epic1.getId()));
+        assertThrows(NotFoundException.class, () -> manager.getSubTaskById(subTask1.getId()));
+        assertThrows(NotFoundException.class, () -> manager.getSubTaskById(subTask2.getId()));
     }
 
     @Test
@@ -272,10 +263,8 @@ abstract class TaskManagerTest<T extends TaskManager> {
         manager.createEpic(epic1);
         createSubTasksForEpic1();
         manager.createSubTask(subTask1);
-
         manager.removeSubTaskByIdAndEpicId(subTask1.getId(), epic1.getId());
-
-        assertNull(manager.getSubTaskById(subTask1.getId()));
+        assertThrows(NotFoundException.class, () -> manager.getSubTaskById(subTask1.getId()));
         assertFalse(manager.getEpicById(epic1.getId()).getSubTasks().contains(subTask1.getId()));
     }
 

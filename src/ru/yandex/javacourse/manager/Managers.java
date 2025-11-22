@@ -1,20 +1,24 @@
 package ru.yandex.javacourse.manager;
 
 
-import ru.yandex.javacourse.exception.ManagerSaveException;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import ru.yandex.javacourse.history.HistoryManager;
 import ru.yandex.javacourse.history.InMemoryHistoryManager;
+import ru.yandex.javacourse.manager.http.LocalDateTimeAdapter;
 
-import java.io.File;
-import java.io.IOException;
+import java.time.LocalDateTime;
 
 public class Managers {
+
     public static TaskManager getDefault() {
-        try {
-            return new FileBackedTaskManager(File.createTempFile("tasks", ".csv"));
-        } catch (IOException e) {
-            throw new ManagerSaveException("Не удалось создать временный файл для FileBackedTaskManager");
-        }
+        return new InMemoryTaskManager();
+    }
+
+    public static Gson getGson() {
+        GsonBuilder gsonBuilder = new GsonBuilder();
+        gsonBuilder.registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter());
+        return gsonBuilder.create();
     }
 
     public static HistoryManager getDefaultHistory() {
