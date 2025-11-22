@@ -39,8 +39,8 @@ public class CSVFormatter {
         if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.TASK)) {
             return new Task(Integer.parseInt(value[0]),
                     value[2],
-                    value[4],
-                    Status.valueOf(value[3]),
+                    value[3],
+                    Status.valueOf(value[4]),
                     Long.parseLong(value[6]),
                     parseDateTime(value[7]),
                     parseDateTime(value[8]));
@@ -48,8 +48,8 @@ public class CSVFormatter {
         if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.EPIC)) {
             return new Epic(Integer.parseInt(value[0]),
                     value[2],
-                    value[4],
-                    Status.valueOf(value[3]),
+                    value[3],
+                    Status.valueOf(value[4]),
                     Long.parseLong(value[6]),
                     parseDateTime(value[7]),
                     parseDateTime(value[8]));
@@ -57,8 +57,8 @@ public class CSVFormatter {
         if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.SUBTASK)) {
             return new SubTask(Integer.parseInt(value[0]),
                     value[2],
-                    value[4],
-                    Status.valueOf(value[3]),
+                    value[3],
+                    Status.valueOf(value[4]),
                     Integer.parseInt(value[5]),
                     Long.parseLong(value[6]),
                     parseDateTime(value[7]),
@@ -72,8 +72,8 @@ public class CSVFormatter {
         line = task.getId() + ","
                 + task.getType() + ","
                 + task.getTitle() + ","
-                + task.getStatus() + ","
                 + task.getDescription() + ","
+                + task.getStatus() + ","
                 + (task instanceof SubTask ? ((SubTask) task).getEpicId() : "") + ","
                 + task.getDuration() + ","
                 + task.getStartTime() + ","
