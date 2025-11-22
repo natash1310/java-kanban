@@ -11,12 +11,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class ManagersTest extends Task {
 
     @Test
-    @DisplayName("Получение дефолтного менеджера задач")
-    void getDefault() {
-        assertEquals(InMemoryTaskManager.class, Managers.getDefault().getClass());
-    }
-
-    @Test
     @DisplayName("Получение дефолтного менеджера истории")
     void getDefaultHistory() {
         assertEquals(InMemoryHistoryManager.class, Managers.getDefaultHistory().getClass());

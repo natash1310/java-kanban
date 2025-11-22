@@ -8,11 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("Тестовый класс для проверки методов класса SubTask")
 class SubTaskTest extends Task {
-    private SubTask subTask;
     private final String titleOfSubTask = "SubTask";
     private final String descriptionOfSubTask = "Test description";
     private final int epicId = 1;
-
+    private SubTask subTask;
 
     @BeforeEach
     void beforeEach() {

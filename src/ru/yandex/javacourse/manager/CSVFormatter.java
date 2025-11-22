@@ -1,0 +1,90 @@
+package ru.yandex.javacourse.manager;
+
+import ru.yandex.javacourse.tasks.*;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class CSVFormatter {
+
+    public static String getHeader() {
+        return "id,type,name,description,status,epic,duration,startTime,endTime";
+    }
+
+    public static List<Integer> historyFromString(String s) {
+        String[] lines = s.split(",");
+        List<Integer> history = new ArrayList<>(lines.length);
+        for (String line : lines) {
+            history.add(Integer.parseInt(line));
+        }
+        return history;
+    }
+
+    public static String historyToString(List<Task> history) {
+        if (history.isEmpty()) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(history.getFirst().getId());
+        for (int i = 1; i < history.size(); i++) {
+            Task task = history.get(i);
+            sb.append(",");
+            sb.append(task.getId());
+        }
+        return sb.toString();
+    }
+
+    public static Task taskFromString(String[] value) {
+        if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.TASK)) {
+            return new Task(Integer.parseInt(value[0]),
+                    value[2],
+                    value[3],
+                    Status.valueOf(value[4]),
+                    Long.parseLong(value[6]),
+                    parseDateTime(value[7]),
+                    parseDateTime(value[8]));
+        }
+        if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.EPIC)) {
+            return new Epic(Integer.parseInt(value[0]),
+                    value[2],
+                    value[3],
+                    Status.valueOf(value[4]),
+                    Long.parseLong(value[6]),
+                    parseDateTime(value[7]),
+                    parseDateTime(value[8]));
+        }
+        if (TypeOfTask.valueOf(value[1]).equals(TypeOfTask.SUBTASK)) {
+            return new SubTask(Integer.parseInt(value[0]),
+                    value[2],
+                    value[3],
+                    Status.valueOf(value[4]),
+                    Integer.parseInt(value[5]),
+                    Long.parseLong(value[6]),
+                    parseDateTime(value[7]),
+                    parseDateTime(value[8]));
+        }
+        return null;
+    }
+
+    public static String toString(Task task) {
+        String line;
+        line = task.getId() + ","
+                + task.getType() + ","
+                + task.getTitle() + ","
+                + task.getDescription() + ","
+                + task.getStatus() + ","
+                + (task instanceof SubTask ? ((SubTask) task).getEpicId() : "") + ","
+                + task.getDuration() + ","
+                + task.getStartTime() + ","
+                + task.getEndTime();
+        return line;
+    }
+
+    private static LocalDateTime parseDateTime(String dateTimeStr) {
+        if (dateTimeStr == null || dateTimeStr.equals("null") || dateTimeStr.trim().isEmpty()) {
+            return null;
+        }
+        return LocalDateTime.parse(dateTimeStr);
+    }
+}

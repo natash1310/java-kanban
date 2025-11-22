@@ -10,9 +10,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Тестовый класс для проверки методов класса Task")
 class TaskTest extends Task {
 
-    private Task task;
     private final String titleOfTask = "Test task";
     private final String descriptionOfTask = "Test description";
+    private Task task;
 
     @BeforeEach
     void beforeEach() {

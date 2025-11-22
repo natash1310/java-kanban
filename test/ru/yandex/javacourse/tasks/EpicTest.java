@@ -9,11 +9,11 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Тестовый класс для проверки методов класса Epic")
 class EpicTest extends Task {
 
-    private Epic epic;
     private final String titleOfEpic = "Test epic";
     private final String descriptionOfEpic = "Test description";
     private final int subTaskId = 2;
     private final int subTaskId2 = 3;
+    private Epic epic;
 
     @BeforeEach
     void beforeEach() {
